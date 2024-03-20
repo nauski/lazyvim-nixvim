@@ -41,7 +41,6 @@
                   cmp-path
                   cmp_luasnip
                   conform-nvim
-                  dashboard-nvim
                   dressing-nvim
                   flash-nvim
                   friendly-snippets
