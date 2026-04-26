@@ -19,6 +19,15 @@
 
       perSystem = { pkgs, lib, system, ... }:
         let
+          # Workaround: nixvim's wrapper plugin (`runCommandLocal "nvim-config"`)
+          # has `name` but no `pname`. Current nixpkgs vim-pack-dir asserts on
+          # `plugin.pname` for its treesitter conflict check, so the build
+          # fails with `attribute 'pname' missing`. Default `pname` to `name`
+          # for runCommandLocal so nixvim's helper inherits a pname.
+          patchedPkgs = pkgs.extend (final: prev: {
+            runCommandLocal = name: attrs: cmd:
+              prev.runCommandLocal name (attrs // { pname = attrs.pname or name; }) cmd;
+          });
           config = {
             extraPackages = with pkgs; [
               # LazyVim
@@ -119,7 +128,10 @@
               '';
           };
           nixvim' = nixvim.legacyPackages."${system}";
-          nvim = nixvim'.makeNixvim config;
+          nvim = nixvim'.makeNixvimWithModule {
+            pkgs = patchedPkgs;
+            module = config;
+          };
         in
         {
           packages = {
