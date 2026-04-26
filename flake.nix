@@ -35,6 +35,11 @@
               stylua
               # Telescope
               ripgrep
+              # nvim-treesitter `main` branch: needs a C compiler and the
+              # tree-sitter CLI to install/build parsers at runtime,
+              # otherwise LazyVim's startup health check fires an error.
+              gcc
+              tree-sitter
             ];
 
             extraPlugins = [ pkgs.vimPlugins.lazy-nvim ];
@@ -117,8 +122,9 @@
                     -- force enable telescope-fzf-native.nvim
                     { "nvim-telescope/telescope-fzf-native.nvim", enabled = true },
                     -- disable mason.nvim, use config.extraPackages
-                    { "williamboman/mason-lspconfig.nvim", enabled = false },
-                    { "williamboman/mason.nvim", enabled = false },
+                    -- (upstream renamed williamboman/* -> mason-org/*)
+                    { "mason-org/mason-lspconfig.nvim", enabled = false },
+                    { "mason-org/mason.nvim", enabled = false },
                     -- uncomment to import/override with your plugins
                     -- { import = "plugins" },
                     -- put this line at the end of spec to clear ensure_installed
